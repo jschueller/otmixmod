@@ -90,7 +90,7 @@ OT::Mixture MixtureFactory::buildAsMixture(const OT::Sample & sample) const
 
 OT::Mixture MixtureFactory::buildAsMixture(const OT::Sample & sample,
     OT::Indices & labels,
-    OT::Point & BICLogLikelihood) const
+    OT::Point & bicLogLikelihood) const
 {
   const OT::UnsignedInteger sampleSize(sample.getSize());
   if (sampleSize == 0) throw OT::InvalidArgumentException(HERE) << "Error: cannot build a MixMod distribution from an empty sample";
@@ -163,11 +163,10 @@ OT::Mixture MixtureFactory::buildAsMixture(const OT::Sample & sample,
   for (OT::UnsignedInteger i = 0; i < sampleSize; ++i) labels[i] = tabLabels[i] - 1;
   delete [] tabLabels;
 
-  BICLogLikelihood = OT::Point(3);
-  // old version: BICLogLikelihood[0] = param->getModel()->getLogLikelihood(false);
-  BICLogLikelihood[0] = clusteringModelOutput->getLikelihood();
-  // old version: BICLogLikelihood[1] = param->getModel()->getCompletedLogLikelihood();
-  // old version: BICLogLikelihood[2] = param->getModel()->getEntropy();
+  bicLogLikelihood.resize(3);
+  bicLogLikelihood[0] = clusteringModelOutput->getLikelihood();
+  bicLogLikelihood[1] = clusteringModelOutput->getCompletedLikelihood();
+  bicLogLikelihood[2] = clusteringModelOutput->getEntropy();
   return OT::Mixture(coll);
 }
 
